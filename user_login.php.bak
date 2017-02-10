@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--[if lt IE 7]>      <html lang="en" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" class="no-js" >
+<!--<![endif]-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<!-- meta character set -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- Always force latest IE rendering engine or request Chrome Frame -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>User login</title>
+<!-- Meta Description -->
+<meta name="description" content="Blue One Page Creative HTML5 Template">
+<meta name="keywords" content="one page, single page, onepage, responsive, parallax, creative, business, html5, css3, css3 animation">
+<meta name="author" content="Muhammad Morshed">
+
+<!-- Mobile Specific Meta -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- CSS
+		================================================== -->
+
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+
+<!-- Fontawesome Icon font -->
+<link rel="stylesheet" href="css/font-awesome.min.css">
+<!-- bootstrap.min -->
+<link rel="stylesheet" href="css/jquery.fancybox.css">
+<!-- bootstrap.min -->
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<!-- bootstrap.min -->
+<link rel="stylesheet" href="css/owl.carousel.css">
+<!-- bootstrap.min -->
+<link rel="stylesheet" href="css/slit-slider.css">
+<!-- bootstrap.min -->
+<link rel="stylesheet" href="css/animate.css">
+<!-- Main Stylesheet -->
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="style/style.css" type="text/css" media="screen" />
+
+<style type="text/css">
+body, td, th {
+	font-family: "Open Sans", sans-serif;
+	color: #999999;
+}
+img{
+float: left;
+margin-right: 5px;	
+}
+a:link {
+    color: white;
+}
+a:visited {
+    color: white;
+}
+a:hover {
+    color: white;
+}
+</style>
+
+
+<body>
+<div align="center" id="mainWrapper">
+  <?php include_once("template_header.php");?>
+  <?php 
+  
+if (isset($_SESSION["user"])) {
+    header("location: list_all_products.php"); 
+    exit();
+}
+?>
+
+<?php 
+if (isset($_POST["username"]) && isset($_POST["password"])) {
+
+	$user = preg_replace('#[^A-Za-z0-9]#i', '', $_POST["username"]);
+    $password = preg_replace('#[^A-Za-z0-9]#i', '', $_POST["password"]);
+
+    include "storescripts/connect_to_mysql.php"; 
+    $sql = mysql_query("SELECT id FROM customer WHERE login='$user' AND password='$password' LIMIT 1"); 
+	
+    $existCount = mysql_num_rows($sql);
+    if ($existCount == 1) { 
+	     while($row = mysql_fetch_array($sql)){ 
+             $id = $row["id"];
+		 }
+		 $_SESSION["id"] = $id;
+		 $_SESSION["user"] = $user;
+		 $_SESSION["password"] = $password;
+		 header("location: list_all_products.php?userloginsuccess");
+         exit();
+    } else {
+		echo 'That information is incorrect, try again <a href="index.php">Click Here</a>';
+		exit();
+	}
+}
+?>
+  <div class="container"><br />
+    <div align="left" style="margin-left:24px;">
+      <h2>Please Log In To Buy</h2>
+      <form id="form2" name="form2" method="post" action="user_login.php">
+        User Name:<br />
+          <input name="username" type="text" id="username" size="30" />
+        <br /><br />
+        Password:<br />
+       <input name="password" type="password" id="password" size="30" />
+       <br />
+       <br />
+       <br />
+       
+         <input type="submit" name="button" id="button" value="Log In" />
+       
+      </form>
+      <p>&nbsp; </p>
+    </div>
+    <br />
+  <br />
+  <br />
+  </div>
+  <div id=""> <a href="storeadmin/admin_login.php">Admin Login</a></div>
+</div>
+</body>
+</html>
